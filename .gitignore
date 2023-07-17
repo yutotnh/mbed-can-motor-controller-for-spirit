@@ -3,6 +3,7 @@
 projectfiles
 *.py*
 mbed-os
+spirit
 BUILD
 
 # Mbed CLI 2

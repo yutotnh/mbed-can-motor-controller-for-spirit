@@ -1,0 +1,29 @@
+// cSpell Settings
+{
+    "version": "0.2",
+    "language": "en",
+    "words": [
+        "armmbed",
+        "Autobuild",
+        "CodeQL",
+        "cpptools",
+        "devcontainer",
+        "devcontainers",
+        "dhoeric",
+        "jidicula",
+        "Mbed",
+        "noninteractive",
+        "Nucleo",
+        "projectfiles",
+        "Protobuf",
+        "twxs",
+        "USBRX",
+        "USBTX",
+        "vcpkg",
+        "yutotnh"
+    ],
+    "dictionaries": ["softwareTerms", "cpp"],
+    "useGitignore": true,
+    "enableGlobDot": true,
+    "ignorePaths": [".git"]
+}
