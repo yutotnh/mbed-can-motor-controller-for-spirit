@@ -5,3 +5,5 @@ projectfiles
 mbed-os
 BUILD
 
+# Mbed CLI 2
+cmake_build
