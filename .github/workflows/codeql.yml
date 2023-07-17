@@ -50,7 +50,7 @@ jobs:
         language: ["cpp"]
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
         # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
-        target: [NUCLEO_F303K8]
+        target: [LPC1768]
         profile: [release, debug, develop]
 
     steps:
