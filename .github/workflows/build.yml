@@ -1,0 +1,83 @@
+name: Build spirit
+
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "**/CMakeLists.txt"
+      - "**.h"
+      - "**.cpp"
+      - "*.lib"
+      - "**/build.yml"
+  pull_request:
+    paths:
+      - "**/CMakeLists.txt"
+      - "**.h"
+      - "**.cpp"
+      - "*.lib"
+      - "**/build.yml"
+  workflow_dispatch:
+
+jobs:
+  build-cli-v1:
+    container:
+      image: ghcr.io/armmbed/mbed-os-env:master-latest
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        target: [LPC1768]
+        profile: [release, debug, develop]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: build-mbed-cli
+        run: |
+          set -e
+          mbed deploy
+          mbed compile -t GCC_ARM -m ${{ matrix.target }} --profile ${{ matrix.profile }}
+
+  build-cli-v2:
+    container:
+      image: ghcr.io/armmbed/mbed-os-env:master-latest
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        target: [LPC1768]
+        profile: [release, debug, develop]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: build-mbed-tools
+        run: |
+          set -e
+          mbed-tools deploy
+          mbed-tools compile -t GCC_ARM -m ${{ matrix.target }} --profile ${{ matrix.profile }}
+
+  build-cli-v2-with-cmake:
+    container:
+      image: ghcr.io/armmbed/mbed-os-env:master-latest
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        target: [LPC1768]
+        profile: [release, debug, develop]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: build-mbed-tools
+        run: |
+          set -e
+          mbed-tools deploy
+          mbed-tools configure -t GCC_ARM -m ${{ matrix.target }} --profile ${{ matrix.profile }}
+          cmake -S . -B cmake_build/${{ matrix.target }}/${{ matrix.profile }}/GCC_ARM -GNinja
+          cmake --build cmake_build/${{ matrix.target }}/${{ matrix.profile }}/GCC_ARM
