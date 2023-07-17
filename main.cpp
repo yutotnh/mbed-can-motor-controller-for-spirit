@@ -3,10 +3,7 @@
 #include <cstring>
 
 #include "mbed.h"
-#include "spirit/include/FakeUdpConverter.h"
-#include "spirit/include/Id.h"
-#include "spirit/include/Motor.h"
-#include "spirit/include/PwmDataConverter.h"
+#include "spirit.h"
 
 static constexpr uint32_t pc_baud   = 11'5200;
 static constexpr auto     loop_rate = 100ms;
@@ -21,20 +18,21 @@ static constexpr uint32_t dip_sw    = 0x00;
  */
 int write(CAN &can, spirit::Motor &motor)
 {
-    spirit::FakeUdpConverter fake_udp;
-    spirit::PwmDataConverter pwm_data;
-    const uint32_t           can_id = spirit::can::get_motor_id(1, 0, dip_sw);
+    spirit::FakeUdpConverter   fake_udp;
+    spirit::MotorDataConverter motor_data;
+    const uint32_t             can_id = spirit::can::get_motor_id(1, 0, dip_sw);
 
-    constexpr std::size_t max_pwm_data_buffer_size = 64;
-    uint8_t               pwm_data_buffer[8]       = {};
-    std::size_t           pwm_data_buffer_size;
+    constexpr std::size_t max_motor_data_buffer_size = 64;
+    uint8_t               motor_data_buffer[8]       = {};
+    std::size_t           motor_data_buffer_size;
 
     constexpr std::size_t max_fake_udp_buffer_size = 64;
     uint8_t               fake_udp_buffer[8]       = {};
     std::size_t           fake_udp_buffer_size;
 
-    pwm_data.encode(motor, max_pwm_data_buffer_size, pwm_data_buffer, pwm_data_buffer_size);
-    fake_udp.encode(pwm_data_buffer, pwm_data_buffer_size, max_fake_udp_buffer_size, fake_udp_buffer,
+    motor_data.encode(motor, max_motor_data_buffer_size, motor_data_buffer, motor_data_buffer_size);
+
+    fake_udp.encode(motor_data_buffer, motor_data_buffer_size, max_fake_udp_buffer_size, fake_udp_buffer,
                     fake_udp_buffer_size);
 
     CANMessage msg;
@@ -54,6 +52,7 @@ int main()
     CAN can(p30, p29);
 
     spirit::Motor motor;
+    motor.control_system(spirit::Motor::ControlSystem::PWM);
     motor.state(spirit::Motor::State::Brake);
     motor.duty_cycle(0.00F);
 
