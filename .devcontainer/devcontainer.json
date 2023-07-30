@@ -1,9 +1,8 @@
 {
     "name": "spirit",
-    "build": {
-        "dockerfile": "Dockerfile",
-        "cacheFrom": "ghcr.io/yutotnh/spirit"
-    },
+
+    "image": "ghcr.io/yutotnh/spirit",
+
     "features": {
         "ghcr.io/devcontainers/features/docker-in-docker:2": {},
         "ghcr.io/dhoeric/features/act:1": {}
