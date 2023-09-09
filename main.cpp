@@ -56,6 +56,7 @@ int main()
     CAN can(p30, p29);
 
     spirit::Motor motor;
+
     motor.control_system(spirit::Motor::ControlSystem::PWM);
     motor.pid_gain_factor(default_kp, default_ki, default_ki / 4.0f);
 
@@ -84,30 +85,30 @@ int main()
             } else {
                 switch (pc_data) {
                     case 'q':
-                        state = spirit::Motor::State::Coast;
+                        motor.state(spirit::Motor::State::Coast);
                         debug("state : Coast\r\n");
                         break;
                     case 'w':
-                        state = spirit::Motor::State::CW;
+                        motor.state(spirit::Motor::State::CW);
                         debug("state : CW\r\n");
                         break;
                     case 'e':
-                        state = spirit::Motor::State::CCW;
+                        motor.state(spirit::Motor::State::CCW);
                         debug("state : CCW\r\n");
                         break;
                     case 'r':
-                        state = spirit::Motor::State::Brake;
+                        motor.state(spirit::Motor::State::Brake);
                         debug("state : Brake\r\n");
                         break;
                     case 'd':
                         motor.control_system(spirit::Motor::ControlSystem::PWM);
-                        state = spirit::Motor::State::Brake;
+                        motor.state(spirit::Motor::State::Brake);
                         motor.duty_cycle(0.00F);
                         debug("PWM Mode\r\n");
                         break;
                     case 's':
                         motor.control_system(spirit::Motor::ControlSystem::Speed);
-                        state = spirit::Motor::State::Brake;
+                        motor.state(spirit::Motor::State::Brake);
                         motor.speed(0.00f);
                         debug("Speed Control Mode\r\n");
                         break;
@@ -123,7 +124,7 @@ int main()
                         write(can, motor);
 
                         debug("Gain Change Mode\r\nKp : ");
-                        
+
                         if (scanf("%f", &kp) != 1) {
                             kp = default_kp;
                             debug("scan error [kp = default_kp]\r\n");
@@ -142,11 +143,10 @@ int main()
 
                         break;
                     default:
-                        state = spirit::Motor::State::Brake;
+                        motor.state(spirit::Motor::State::Brake);
                         debug("***Input Error: Change state to Brake.***\r\n");
                         break;
                 }
-                motor.state(state);
             }
         }
 
